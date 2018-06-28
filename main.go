@@ -7,8 +7,7 @@ import (
 
 func main(){
 	groupId := "dahuitang"
-	//groupIds := []string{groupId}
-
+/*
 	personIds,err := facesdk.FaceGetPersons(groupId)
 
 	if err == nil {
@@ -18,9 +17,11 @@ func main(){
 	} else {
 		fmt.Println(err)
 	}
+*/	
+	groupIds := []string{groupId}
+	facesdk.FaceAddPerson("abc", groupIds)
+	fmt.Println()
 	
-	//facesdk.FaceAddPerson("abc", groupIds)
-
 	//url := "https://dahuitang.oss-cn-beijing.aliyuncs.com/yz1.jpg"
 	
 	//facesdk.FaceScan(url, groupId)

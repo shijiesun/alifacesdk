@@ -27,8 +27,7 @@ func FaceGetPersons(groupId string) ([]string, error) {
 
 	fmt.Println(resultJson)
 	
-	var result GetPersonsResponse
-	
+	var result GetPersonsResponse	
 	if err := json.Unmarshal([]byte(resultJson), &result); err != nil {
 		return nil, err
 	}
@@ -47,7 +46,7 @@ func FaceGetPersons(groupId string) ([]string, error) {
 
 }
 
-func FaceAddPerson(personId string, groupIds []string) {
+func FaceAddPerson(personId string, groupIds []string) string {
 	profile := greensdksample.Profile{AccessKeyId:accessKeyId, AccessKeySecret:accessKeySecret}
 
 	path := "/green/sface/person/add"
@@ -59,7 +58,15 @@ func FaceAddPerson(personId string, groupIds []string) {
 	var client greensdksample.IAliYunClient = greensdksample.DefaultClient{Profile:profile}
 
 	// your biz code
-	fmt.Println(client.GetResponse(path, clientInfo, string(reqjson)))
+	result := client.GetResponse(path, clientInfo, string(reqjson))
+
+	fmt.Println(result)
+
+	var result GetPersonsResponse	
+	if err := json.Unmarshal([]byte(resultJson), &result); err != nil {
+		return nil, err
+	}
+	
 }
 
 
