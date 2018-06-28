@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 	"io/ioutil"
-	"fmt"
+	//"fmt"
 )
 
 type DefaultClient struct {
@@ -18,7 +18,7 @@ func (defaultClient DefaultClient) GetResponse(path string, clinetInfo ClinetInf
 
 	client := &http.Client{}
 
-	fmt.Println(host + path + "?clientInfo=" + url.QueryEscape(string(clientInfoJson)))
+	//fmt.Println(host + path + "?clientInfo=" + string(clientInfoJson))
 	
 	req, err := http.NewRequest(method, host + path + "?clientInfo=" + url.QueryEscape(string(clientInfoJson)), strings.NewReader(bizDataJson))
 

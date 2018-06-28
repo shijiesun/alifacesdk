@@ -29,11 +29,4 @@ type BizData struct {
 	Tasks	[]Task		`json:"tasks"`
 }
 
-type GetPersonsRequest struct {
-	GroupId string          `json:"groupId"`
-}
 
-type AddPersonRequest struct {
-	PersonId string         `json:"personId"`
-	GroupIds []string       `json:"groupIds"`
-}
