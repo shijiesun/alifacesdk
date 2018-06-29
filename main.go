@@ -17,10 +17,12 @@ func main(){
 	} else {
 		fmt.Println(err)
 	}
-*/	
+*/
 	groupIds := []string{groupId}
-	facesdk.FaceAddPerson("abc", groupIds)
-	fmt.Println()
+	err := facesdk.FaceAddPerson("abc1", groupIds)
+	if err != nil {
+		fmt.Println(err)
+	}
 	
 	//url := "https://dahuitang.oss-cn-beijing.aliyuncs.com/yz1.jpg"
 	

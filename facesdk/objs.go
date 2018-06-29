@@ -1,4 +1,4 @@
-package facesdk;
+package facesdk
 
 type GetPersonsRequest struct {
 	GroupId string          `json:"groupId"`
@@ -8,9 +8,9 @@ type GetPersonsData struct {
 	PersonIds []string      `json:"personIds"`
 }
 
-type GetPersonsResponse struct {
+type AbstractResponse struct {
 	Code int                `json:"code"`
-        Data GetPersonsData     `json:"data"`
+	Data interface{}     
 	Msg string              `json:"msg"`
 }
 
