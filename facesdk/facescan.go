@@ -41,7 +41,7 @@ func FaceGetPersons(groupId string) ([]string, error) {
 
 		fmt.Println(string(rawdata))
 		
-		var data GetPersonsData
+		var data GetPersonsResponse
 
 		if err := json.Unmarshal([]byte(rawdata), &data); err != nil {
 			return nil, err
@@ -53,11 +53,51 @@ func FaceGetPersons(groupId string) ([]string, error) {
 	} else {
 		return nil,nil
 	}
-	
-	
-
 }
 
+func FaceGetPerson(personId string) (*Person, error) {
+	profile := greensdksample.Profile{AccessKeyId:accessKeyId, AccessKeySecret:accessKeySecret}
+
+	path := "/green/sface/person"
+	
+	clientInfo := greensdksample.ClinetInfo{Ip:"127.0.0.1"}
+
+	req := GetPersonRequest{PersonId:personId}
+	reqjson, _ := json.Marshal(req)
+	
+	var client greensdksample.IAliYunClient = greensdksample.DefaultClient{Profile:profile}
+
+	// your biz code
+	resultJson := client.GetResponse(path, clientInfo, string(reqjson))
+
+	fmt.Println(resultJson)
+
+	var rawdata json.RawMessage
+	result  := AbstractResponse{
+		Data : &rawdata,
+	}
+	if err := json.Unmarshal([]byte(resultJson), &result); err != nil {
+		return nil, err
+	}
+
+	fmt.Println(result.Code)
+
+	if result.Code == 200 {
+
+		fmt.Println(string(rawdata))
+		
+		var person Person
+
+		if err := json.Unmarshal([]byte(rawdata), &person); err != nil {
+			return nil, err
+		}
+
+		return &person, nil
+	} else {
+		return nil,nil
+	}
+}
+ 
 func FaceAddPerson(personId string, groupIds []string) error {
 	profile := greensdksample.Profile{AccessKeyId:accessKeyId, AccessKeySecret:accessKeySecret}
 
@@ -88,6 +128,49 @@ func FaceAddPerson(personId string, groupIds []string) error {
 	return nil
 }
 
+func FaceAddFace(personId string, urls []string) ([]AddFaceResponse, error) {
+	profile := greensdksample.Profile{AccessKeyId:accessKeyId, AccessKeySecret:accessKeySecret}
+
+	path := "/green/sface/face/add"
+	clientInfo := greensdksample.ClinetInfo{Ip:"127.0.0.1"}
+
+	req := AddFaceRequest{personId, urls}
+	reqjson, _ := json.Marshal(req)
+	
+	var client greensdksample.IAliYunClient = greensdksample.DefaultClient{Profile:profile}
+
+	// your biz code
+	resultJson := client.GetResponse(path, clientInfo, string(reqjson))
+
+	fmt.Println(resultJson)
+
+	var rawdata json.RawMessage
+	result  := AbstractResponse{
+		Data : &rawdata,
+	}
+	if err := json.Unmarshal([]byte(resultJson), &result); err != nil {
+		return nil, err
+	}
+
+	fmt.Println(result.Code)
+
+	if result.Code == 200 {
+		fmt.Println(string(rawdata))
+
+		var data AddFaceData
+
+		if err := json.Unmarshal([]byte(rawdata), &data); err != nil {
+			return nil, err
+		}
+
+		return data.FaceImageItems, nil
+		
+	} else {
+		return nil, fmt.Errorf("%s", result.Msg)
+	}
+	
+	return nil,nil
+}
 
 func FaceScan(url, groupId string) {
 	profile := greensdksample.Profile{AccessKeyId:accessKeyId, AccessKeySecret:accessKeySecret}
