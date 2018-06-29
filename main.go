@@ -8,7 +8,10 @@ import (
 func main(){
 	groupId := "dahuitang"
 	//urls := []string{"https://dahuitang.oss-cn-beijing.aliyuncs.com/yz.jpg", "https://dahuitang.oss-cn-beijing.aliyuncs.com/yz1.jpg"}
-	
+
+	//urls := []string{"https://dahuitang.oss-cn-beijing.aliyuncs.com/garnet.png"}
+
+	//personId := "garnet"
 /*
 	personIds,err := facesdk.FaceGetPersons(groupId)
 
@@ -21,13 +24,13 @@ func main(){
 	}
 
         groupIds := []string{groupId}
-	err := facesdk.FaceAddPerson("abc1", groupIds)
+	err := facesdk.FaceAddPerson(personId, groupIds)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 
-	addFaceResponse, err := facesdk.FaceAddFace("abc1", urls)
+	addFaceResponse, err := facesdk.FaceAddFace(personId, urls)
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -47,12 +50,34 @@ func main(){
 	} else {
 		p := *person
 		fmt.Println(p.Code)
+		fmt.Printf("face count is %d\n", len(p.FaceIds))
+	}
+
+
+	faceIds1 := []string{"32516049499153440","32509073400612867","32513118561461275fdsfsd"}
+
+	err := facesdk.FaceDeleteFace(faceIds1, personId)
+	if err != nil {
+		fmt.Println(err)
+
+	err = facesdk.FaceDeletePerson(personId)
+	if err != nil {
+		fmt.Println(err)
 	}
 */
-	url := "https://dahuitang.oss-cn-beijing.aliyuncs.com/yz1.jpg"
-	
-	facesdk.FaceScan(url, groupId)
+	url := "https://dahuitang.oss-cn-beijing.aliyuncs.com/nba.jpg"
 
-	fmt.Println()
+	var topPersons *[]facesdk.TopPerson
+	
+	topPersons, err := facesdk.FaceScan(url, groupId)
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		for _,v := range *topPersons {
+			fmt.Printf("%d, %d, %d, %d\n", v.FaceItem.X, v.FaceItem.Y, v.FaceItem.Width, v.FaceItem.Height)
+		}
+	}
+
 }
 

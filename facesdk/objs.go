@@ -44,6 +44,62 @@ type Person struct {
 	PersonId string           `json:"personId"`
 	Name string               `json:"name"`
 	groupIds []string         `json:"groupIds"`
-	faceIds []string          `json:"faceIds"`
+	FaceIds []string          `json:"faceIds"`
 	Note string               `json:"note"`
+}
+
+type FaceLoc struct {
+	Height int                `json:"height"`
+	Width int                 `json:"width"`
+	X int                     `json:"x"`
+	Y int                     `json:"y"`
+}
+
+type PersonFound struct {
+	FaceId string             `json:"faceId"`
+	PersonId string           `json:"personId"`
+	Rate float64              `json:"rate"`
+}
+
+type DeleteFaceRequest struct {
+	PersonId string            `json:"personId"`
+	FaceIds []string           `json:"faceIds"`
+}
+
+type DeleteFaceResponse struct {
+	Code int                   `json:"code"`
+	PersonId string            `json:"personId"`
+	FaceIds []string           `json:"faceIds"`
+	DeleteCount int            `json:"ddeleteCount"`
+}
+
+type DeletePersonRequest struct {
+	PersonId string            `json:"personId"`
+}
+
+type DeletePersonResponse struct {
+	Code int                   `json:"code"`
+	PersonId string            `json:"personId"`
+	DeleteCount int            `json:"ddeleteCount"`
+}
+
+type TopPerson struct {
+	FaceItem FaceLoc          `json:"faceItem"`
+	Persons []PersonFound     `json:"persons"`
+}
+
+type ScanResults struct {
+	Rate float64              `json:"rate"`
+	TopPersonData []TopPerson `json:"topPersonData"`
+}
+
+type ScanData struct {
+	Code int                  `json:"code"`
+	Results []ScanResults     `json:"results"`
+	Msg string                `json:msg`
+}
+type ScanResponse struct {
+	Code int                  `json:"code"`
+	Data []ScanData           `json:"data"`
+	Msg string                `json:msg`
 }

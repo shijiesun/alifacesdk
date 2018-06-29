@@ -35,8 +35,6 @@ func FaceGetPersons(groupId string) ([]string, error) {
 		return nil, err
 	}
 
-	fmt.Println(result.Code)
-
 	if result.Code == 200 {
 
 		fmt.Println(string(rawdata))
@@ -51,7 +49,7 @@ func FaceGetPersons(groupId string) ([]string, error) {
 
 		return personIds, nil
 	} else {
-		return nil,nil
+		return nil,fmt.Errorf("%s", result.Msg)
 	}
 }
 
@@ -70,7 +68,7 @@ func FaceGetPerson(personId string) (*Person, error) {
 	// your biz code
 	resultJson := client.GetResponse(path, clientInfo, string(reqjson))
 
-	fmt.Println(resultJson)
+	//fmt.Println(resultJson)
 
 	var rawdata json.RawMessage
 	result  := AbstractResponse{
@@ -79,8 +77,6 @@ func FaceGetPerson(personId string) (*Person, error) {
 	if err := json.Unmarshal([]byte(resultJson), &result); err != nil {
 		return nil, err
 	}
-
-	fmt.Println(result.Code)
 
 	if result.Code == 200 {
 
@@ -124,8 +120,49 @@ func FaceAddPerson(personId string, groupIds []string) error {
 	} else {
 		return fmt.Errorf("%s", result.Msg)
 	}
+}
+
+func FaceDeletePerson(personId string) error {
+	profile := greensdksample.Profile{AccessKeyId:accessKeyId, AccessKeySecret:accessKeySecret}
+
+	path := "/green/sface/person/delete"
+
+	clientInfo := greensdksample.ClinetInfo{Ip:"127.0.0.1"}
+
+	req := DeletePersonRequest{personId}
+	reqjson, _ := json.Marshal(req)
 	
-	return nil
+	var client greensdksample.IAliYunClient = greensdksample.DefaultClient{Profile:profile}
+
+	// your biz code
+	resultJson := client.GetResponse(path, clientInfo, string(reqjson))
+
+	fmt.Println(resultJson)
+
+	var rawdata json.RawMessage
+	result  := AbstractResponse{
+		Data : &rawdata,
+	}
+	if err := json.Unmarshal([]byte(resultJson), &result); err != nil {
+		return err
+	}
+
+	if result.Code == 200 {
+		fmt.Println(string(rawdata))
+
+		var data DeletePersonResponse
+		if err := json.Unmarshal([]byte(rawdata), &data); err != nil {
+			return err
+		}
+
+		if data.Code == 200 {
+			return nil
+		} else {
+			return fmt.Errorf("%d", data.Code)
+		}
+	} else {
+		return fmt.Errorf("%s", result.Msg)
+	}
 }
 
 func FaceAddFace(personId string, urls []string) ([]AddFaceResponse, error) {
@@ -152,8 +189,6 @@ func FaceAddFace(personId string, urls []string) ([]AddFaceResponse, error) {
 		return nil, err
 	}
 
-	fmt.Println(result.Code)
-
 	if result.Code == 200 {
 		fmt.Println(string(rawdata))
 
@@ -168,11 +203,52 @@ func FaceAddFace(personId string, urls []string) ([]AddFaceResponse, error) {
 	} else {
 		return nil, fmt.Errorf("%s", result.Msg)
 	}
-	
-	return nil,nil
 }
 
-func FaceScan(url, groupId string) {
+//如果personid找不到，则返回error 500，否则返回空，即使没有找到faceId也不会报错
+func FaceDeleteFace(faceIds []string, personId string) error {
+	profile := greensdksample.Profile{AccessKeyId:accessKeyId, AccessKeySecret:accessKeySecret}
+
+	path := "/green/sface/face/delete"
+	clientInfo := greensdksample.ClinetInfo{Ip:"127.0.0.1"}
+
+	req := DeleteFaceRequest{personId, faceIds}
+	reqjson, _ := json.Marshal(req)
+	
+	var client greensdksample.IAliYunClient = greensdksample.DefaultClient{Profile:profile}
+
+	// your biz code
+	resultJson := client.GetResponse(path, clientInfo, string(reqjson))
+
+	fmt.Println(resultJson)
+
+	var rawdata json.RawMessage
+	result  := AbstractResponse{
+		Data : &rawdata,
+	}
+	if err := json.Unmarshal([]byte(resultJson), &result); err != nil {
+		return err
+	}
+
+	if result.Code == 200 {
+		fmt.Println(string(rawdata))
+
+		var data DeleteFaceResponse
+		if err := json.Unmarshal([]byte(rawdata), &data); err != nil {
+			return err
+		}
+
+		if data.Code == 200 {
+			return nil
+		} else {
+			return fmt.Errorf("%d", data.Code)
+		}
+	} else {
+		return fmt.Errorf("%d", result.Code)
+	}
+}
+
+func FaceScan(url, groupId string) (*[]TopPerson, error) {
 	profile := greensdksample.Profile{AccessKeyId:accessKeyId, AccessKeySecret:accessKeySecret}
 
 	path := "/green/image/scan"
@@ -194,7 +270,22 @@ func FaceScan(url, groupId string) {
 	
 	var client greensdksample.IAliYunClient = greensdksample.DefaultClient{Profile:profile}
 
-	// your biz code
-	fmt.Println(client.GetResponse(path, clientInfo, string(bizDataJson)))
+	resultJson := client.GetResponse(path, clientInfo, string(bizDataJson))
 
+	fmt.Println(resultJson)
+	
+	var scanResponse ScanResponse
+
+	if err := json.Unmarshal([]byte(resultJson), &scanResponse); err != nil {
+		return nil, err
+	}
+
+	scanData := scanResponse.Data[0]
+	
+	if scanData.Code != 200 {
+		return nil, fmt.Errorf("%s", scanData.Msg)
+	} else {
+		result := scanData.Results[0]
+		return &result.TopPersonData, nil
+	}
 }
