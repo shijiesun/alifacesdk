@@ -76,6 +76,9 @@ func main(){
 	} else {
 		for _,v := range *topPersons {
 			fmt.Printf("%d, %d, %d, %d\n", v.FaceItem.X, v.FaceItem.Y, v.FaceItem.Width, v.FaceItem.Height)
+			for _,v1 := range v.Persons {
+				fmt.Printf("%s, %s, %f\n", v1.FaceId, v1.PersonId, v1.Rate)
+			}
 		}
 	}
 

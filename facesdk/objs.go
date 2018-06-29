@@ -47,20 +47,6 @@ type Person struct {
 	FaceIds []string          `json:"faceIds"`
 	Note string               `json:"note"`
 }
-
-type FaceLoc struct {
-	Height int                `json:"height"`
-	Width int                 `json:"width"`
-	X int                     `json:"x"`
-	Y int                     `json:"y"`
-}
-
-type PersonFound struct {
-	FaceId string             `json:"faceId"`
-	PersonId string           `json:"personId"`
-	Rate float64              `json:"rate"`
-}
-
 type DeleteFaceRequest struct {
 	PersonId string            `json:"personId"`
 	FaceIds []string           `json:"faceIds"`
@@ -81,6 +67,19 @@ type DeletePersonResponse struct {
 	Code int                   `json:"code"`
 	PersonId string            `json:"personId"`
 	DeleteCount int            `json:"ddeleteCount"`
+}
+
+type FaceLoc struct {
+	Height int                `json:"height"`
+	Width int                 `json:"width"`
+	X int                     `json:"x"`
+	Y int                     `json:"y"`
+}
+
+type PersonFound struct {
+	FaceId string             `json:"faceId"`
+	PersonId string           `json:"personId"`
+	Rate float64              `json:"rate"`
 }
 
 type TopPerson struct {
