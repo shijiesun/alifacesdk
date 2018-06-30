@@ -277,15 +277,29 @@ func FaceScan(url, groupId string) (*[]TopPerson, error) {
 	var scanResponse ScanResponse
 
 	if err := json.Unmarshal([]byte(resultJson), &scanResponse); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Unmarshal(%s) error in FaceScan(%s, %s), msg:%s", resultJson, url, groupId, err)
 	}
 
-	scanData := scanResponse.Data[0]
-	
-	if scanData.Code != 200 {
-		return nil, fmt.Errorf("%s", scanData.Msg)
-	} else {
-		result := scanData.Results[0]
-		return &result.TopPersonData, nil
+	if scanResponse.Code != 200 {
+		return nil, fmt.Errorf("response(%s) error in FaceScan(%s, %s), msg:%s", resultJson, url, groupId, scanResponse.Msg)
 	}
+	
+	if scanResponse.Data != nil && len(scanResponse.Data) > 0  {
+		scanData := scanResponse.Data[0]
+		
+		if scanData.Code != 200 {
+			return nil, fmt.Errorf("response(%s) error in FaceScan(%s, %s), msg:%s", resultJson, url, groupId, scanData.Msg)
+		} else {
+			if scanData.Results != nil && len(scanData.Results) > 0 {
+				result := scanData.Results[0]
+				return &result.TopPersonData, nil	
+			} else {
+				return nil, fmt.Errorf("not found results fields or results is empty in response json(%s)", resultJson)
+			}
+			
+		}	
+	} else {
+		return nil, fmt.Errorf("not found data fields or data is empty in response json(%s)", resultJson)
+	}
+	
 }
