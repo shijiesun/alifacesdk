@@ -2,6 +2,8 @@ package main
 
 import (
 	"facesdk"
+	"strings"
+	"faceimage"
 	"fmt"
 )
 
@@ -74,13 +76,23 @@ func main(){
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		for _,v := range *topPersons {
+		src := "data/nba.jpg"	
+		
+		for i,v := range *topPersons {
+			si := fmt.Sprintf("%d", i)
+			dst := strings.Replace(src, ".", si + ".", 1)
+			fmt.Println("src=", src, " dst=", dst)
+					
 			fmt.Printf("%d, %d, %d, %d\n", v.FaceItem.X, v.FaceItem.Y, v.FaceItem.Width, v.FaceItem.Height)
+			err = faceimage.CutImage(src, dst, v.FaceItem)
+			if err != nil {
+				fmt.Println(err)
+			}		
+			
 			for _,v1 := range v.Persons {
 				fmt.Printf("%s, %s, %f\n", v1.FaceId, v1.PersonId, v1.Rate)
 			}
 		}
 	}
-
 }
 
